@@ -1,0 +1,100 @@
+services:
+  db:
+    image: pgvector/pgvector:0.8.2-pg18-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastapi_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    # Daily local workflow: start with `docker compose up -d`.
+    # Rebuild only after Dockerfile or dependency metadata changes.
+    build:
+      context: ./fastapi_app
+      dockerfile: Dockerfile
+      target: dev
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      # Bind-mount the backend so uvicorn --reload picks up source edits
+      # without forcing `docker compose up -d --build`.
+      - ./fastapi_app:/app
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/fastapi_app
+      CORS_ORIGINS: '["http://localhost:3000"]'
+      ENVIRONMENT: local
+      SEED_DEMO_DATA: "true"
+      UVICORN_RELOAD: "true"
+      WATCHFILES_FORCE_POLLING: "true"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+
+  frontend:
+    # The frontend also runs from bind-mounted source in local dev; routine
+    # restarts should use `docker compose up -d`, not `--build`.
+    build:
+      context: ./frontend-pff-lab
+      dockerfile: Dockerfile
+      target: dev
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend-pff-lab:/app
+      # Keep node_modules in a stable named volume so container recreations do
+      # not leave behind new anonymous volumes.
+      - frontend_node_modules:/app/node_modules
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+      VITE_SHOW_SIMULATION: "true"
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    profiles:
+      - tunnel
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "4040:4040"
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command: http backend:8000 --log stdout
+
+volumes:
+  pgdata:
+  frontend_node_modules:
+    name: projetgemini_frontend_node_modules

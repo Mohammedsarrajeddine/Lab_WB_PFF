@@ -1,0 +1,171 @@
+PFF N°1 : Assistant IA et automatisation WhatsApp pour un
+laboratoire d’analyses médicales
+1. Contexte du projet
+Un laboratoire d’analyses médicales ouvrira prochainement ses portes à Rabat. Afin d’offrir
+une expérience client fluide et moderne, le laboratoire souhaite utiliser WhatsApp Business
+comme canal principal de communication avec les patients.
+Les patients pourront envoyer leurs ordonnances médicales via WhatsApp avant de se
+déplacer au laboratoire. Une assistante pourra alors préparer la demande d’analyses et la
+facture avant l’arrivée du patient.
+Cette organisation permet de réduire fortement le temps d’attente à l’accueil.
+Afin d’améliorer encore le service, le laboratoire souhaite mettre en place une solution basée
+sur l’intelligence artificielle permettant :
+•
+ De répondre automatiquement aux demandes des patients hors horaires d’ouverture
+;
+•
+ De faciliter la gestion des conversations WhatsApp par les assistantes ;
+•
+ D’automatiser l’envoi des résultats d’analyses lorsque ceux-ci sont disponibles.
+2. Problématique
+Dans de nombreux laboratoires, l’accueil des patients nécessite plusieurs opérations
+simultanées :
+•
+ Réception du patient ;
+•
+ Lecture de l’ordonnance ;
+•
+ Saisie des analyses ;
+•
+ Préparation de la facture ;
+•
+ Réponse aux messages WhatsApp ;
+•
+ Transmission ultérieure des résultats.
+Ces tâches peuvent générer :
+1
+•
+ Un temps d’attente important ;
+•
+ Une surcharge de travail pour les assistantes ;
+•
+ Un manque de réactivité pour les demandes envoyées hors horaires.
+Le laboratoire souhaite donc automatiser une partie du processus tout en conservant un
+contrôle humain sur les opérations sensibles.
+3. Objectifs du projet
+L’objectif du projet est de concevoir un prototype d’application intégrant IA et automatisation
+permettant :
+1. De recevoir les demandes des patients via WhatsApp ;
+2. De répondre automatiquement aux questions simples grâce à un chatbot ;
+3. De permettre aux assistantes de préparer les dossiers avant l’arrivée du patient ;
+4. D’automatiser l’envoi des résultats d’analyses lorsque ceux-ci sont disponibles.
+4. Compétences visées
+Ce projet doit permettre aux étudiants de mobiliser les compétences suivantes :
+Intelligence artificielle
+•
+ NLP (traitement du langage naturel)
+•
+ Chatbot conversationnel
+•
+ Extraction d’informations dans des documents
+Automatisation
+•
+ Automatisation de processus métier
+•
+ Agents autonomes
+•
+ Workflows automatisés
+Data engineering
+•
+ Gestion de données
+•
+ Traitement de documents
+•
+ Stockage d’informations
+Développement
+•
+ Développement backend
+2
+
+ documentation technique
+•
+5. Description de la solution attendue
+La solution devra comporter trois modules principaux.
+Module 1 – Réception des demandes WhatsApp
+Le système doit permettre de :
+•
+ recevoir les messages des patients ;
+•
+ afficher les conversations dans une interface utilisée par les assistantes ;
+•
+ détecter les messages contenant une ordonnance ;
+•
+ enregistrer les informations associées à la demande.
+Fonctionnalités attendues :
+•
+ liste des conversations
+•
+ statut des demandes
+•
+ visualisation des documents envoyés
+•
+ historique des échanges
+Module 2 – Chatbot hors horaires
+Le système doit intégrer un chatbot capable de répondre automatiquement aux demandes
+simples lorsque les assistantes ne sont pas disponibles.
+Exemples de questions :
+•
+ horaires d’ouverture
+•
+ localisation du laboratoire
+•
+ documents à apporter
+•
+ délai des résultats
+•
+ possibilité d’envoyer une ordonnance avant la visite
+Le chatbot doit également pouvoir :
+•
+ demander l’envoi d’une ordonnance
+•
+ informer le patient qu’une assistante traitera sa demande dès l’ouverture.
+Module 3 – Agent d’automatisation des résultats
+Le système doit inclure un agent capable de préparer l’envoi des résultats d’analyses via
+WhatsApp.
+Fonctionnement attendu :
+1. un résultat d’analyse est disponible ;
+2. le système vérifie que le patient peut recevoir le résultat ;
+3. un message est généré automatiquement ;
+4. le résultat est envoyé au patient.
+Pour des raisons de sécurité et de confidentialité, le système doit prévoir :
+•
+ une validation humaine possible ;
+•
+ une journalisation des envois.
+6. Architecture technique recommandée
+L’architecture suivante peut-être utilisée:
+Interface utilisateur
+application web
+↓
+Backend API
+FastAPI
+↓
+Modules IA
+(NLP – chatbot – extraction d’informations) 
+↓
+Base de données
+(stockage conversations, demandes, résultats)
+↓
+Intégration WhatsApp
+(API WhatsApp Business ou simulation)
+7. Technologies recommandées
+Langage :
+•
+ Python
+Bibliothèques :
+•
+ Pandas
+•
+ NumPy
+•
+ Scikit-learn pytorch etc 
+•
+ Transformers
+•
+ LangChain
+frontend : 
+React ts tanstack tailwind vite 
+Backend :
+ FastAPI Rag system ( embedding vectore store ) llm groq api (i have groq api key )
+Base de données :
+ PostgreSQL ( i have PostgreSQL installed locally with password etc )

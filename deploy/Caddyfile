@@ -1,0 +1,47 @@
+# =============================================================================
+# Caddyfile — PFF Lab Production
+# Replace {$DOMAIN} with your actual domain or set the DOMAIN env var.
+# Caddy auto-provisions TLS via Let's Encrypt / ZeroSSL.
+# =============================================================================
+
+{$DOMAIN:lab.example.com} {
+    # ── API: proxy to FastAPI backend ─────────────────────────────────────
+    handle /api/* {
+        reverse_proxy backend:8000
+    }
+
+    # ── WhatsApp webhook: proxy to backend ────────────────────────────────
+    handle /webhook* {
+        reverse_proxy backend:8000
+    }
+
+    # ── Everything else: proxy to nginx frontend ──────────────────────────
+    handle {
+        reverse_proxy frontend:80
+    }
+
+    # ── Security headers ──────────────────────────────────────────────────
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        -Server
+    }
+
+    # ── Structured access logs ────────────────────────────────────────────
+    log {
+        output file /data/access.log {
+            roll_size 10mb
+            roll_keep 5
+        }
+    }
+
+    # ── Enable admin API for healthcheck (bind to localhost only) ─────────
+    # Admin API is globally enabled by default on :2019
+}
+
+# Enable Caddy admin endpoint on all interfaces (needed for Docker healthcheck)
+{
+    admin :2019
+}

@@ -1,0 +1,88 @@
+@baseUrl = http://localhost:8000/api/v1
+@verifyToken = change-me
+@conversationId = 00000000-0000-0000-0000-000000000000
+@operatorEmail = operator@lab.local
+@operatorPassword = change-me-now
+@accessToken = paste-access-token
+
+### Health check
+GET {{baseUrl}}/health
+Accept: application/json
+
+### Meta webhook verification
+GET {{baseUrl}}/whatsapp/webhook?hub.mode=subscribe&hub.verify_token={{verifyToken}}&hub.challenge=123456
+Accept: text/plain
+
+### Ingest incoming WhatsApp message (create/update patient + conversation)
+POST {{baseUrl}}/whatsapp/webhook
+Content-Type: application/json
+
+{
+  "chat_id": "whatsapp:+212600000000",
+  "from_phone": "+212600000000",
+  "from_name": "Patient Example",
+  "message_id": "wamid.example.001",
+  "message_type": "document",
+  "text": "Bonjour, voici mon ordonnance.",
+  "media_url": "https://example.com/ordonnance.pdf",
+  "mime_type": "application/pdf",
+  "sent_at": "2026-03-25T20:00:00Z"
+}
+
+### Operator login (copy access_token into @accessToken)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{operatorEmail}}",
+  "password": "{{operatorPassword}}"
+}
+
+### Current authenticated operator
+GET {{baseUrl}}/auth/me
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### List conversations
+GET {{baseUrl}}/conversations?limit=20&offset=0
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### List messages for one conversation
+# Replace @conversationId with a real ID from /conversations response.
+GET {{baseUrl}}/messages?conversation_id={{conversationId}}&limit=50&offset=0
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Send assistant outgoing message
+POST {{baseUrl}}/conversations/{{conversationId}}/messages/outgoing
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "message_type": "text",
+  "text": "Votre dossier est en cours de traitement."
+}
+
+### Update assistant workflow status/notes
+PATCH {{baseUrl}}/conversations/{{conversationId}}/workflow
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "analysis_request_status": "in_review",
+  "notes": "Prescription checked. Waiting for lab technician validation."
+}
+
+### Close conversation with final outgoing message
+POST {{baseUrl}}/conversations/{{conversationId}}/close
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "message": {
+    "message_type": "text",
+    "text": "Vos résultats sont prêts. Merci de votre confiance."
+  },
+  "notes": "Final message sent and request completed."
+}

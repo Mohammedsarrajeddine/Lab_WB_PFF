@@ -1,0 +1,24 @@
+name: Deployment Placeholder
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deployment-deferred:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain deployment status
+        shell: bash
+        run: |
+          {
+            echo "## Deployment deferred"
+            echo
+            echo "This repository currently uses GitHub Actions for CI only."
+            echo
+            echo "- Local development stays on Docker Desktop."
+            echo "- Backend reload and frontend HMR remain the main workflow."
+            echo "- Production deployment will be re-enabled when a server is available."
+          } >> "${GITHUB_STEP_SUMMARY}"

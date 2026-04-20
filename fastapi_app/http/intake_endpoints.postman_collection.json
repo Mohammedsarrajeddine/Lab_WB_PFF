@@ -1,0 +1,338 @@
+{
+  "info": {
+    "name": "FastAPI Intake Endpoints",
+    "description": "Postman collection for WhatsApp intake, assistant workflow, and close-flow endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1"
+    },
+    {
+      "key": "verifyToken",
+      "value": "change-me"
+    },
+    {
+      "key": "conversationId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "operatorEmail",
+      "value": "operator@lab.local"
+    },
+    {
+      "key": "operatorPassword",
+      "value": "change-me-now"
+    },
+    {
+      "key": "accessToken",
+      "value": "paste-access-token"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Webhook Verify",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/whatsapp/webhook?hub.mode=subscribe&hub.verify_token={{verifyToken}}&hub.challenge=123456",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "whatsapp",
+            "webhook"
+          ],
+          "query": [
+            {
+              "key": "hub.mode",
+              "value": "subscribe"
+            },
+            {
+              "key": "hub.verify_token",
+              "value": "{{verifyToken}}"
+            },
+            {
+              "key": "hub.challenge",
+              "value": "123456"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Webhook Ingest",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"chat_id\": \"whatsapp:+212600000000\",\n  \"from_phone\": \"+212600000000\",\n  \"from_name\": \"Patient Example\",\n  \"message_id\": \"wamid.example.001\",\n  \"message_type\": \"document\",\n  \"text\": \"Bonjour, voici mon ordonnance.\",\n  \"media_url\": \"https://example.com/ordonnance.pdf\",\n  \"mime_type\": \"application/pdf\",\n  \"sent_at\": \"2026-03-25T20:00:00Z\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/whatsapp/webhook",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "whatsapp",
+            "webhook"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Operator Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{operatorEmail}}\",\n  \"password\": \"{{operatorPassword}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Current Operator",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "me"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Conversations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/conversations?limit=20&offset=0",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "conversations"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "20"
+            },
+            {
+              "key": "offset",
+              "value": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Messages",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/messages?conversation_id={{conversationId}}&limit=50&offset=0",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "messages"
+          ],
+          "query": [
+            {
+              "key": "conversation_id",
+              "value": "{{conversationId}}"
+            },
+            {
+              "key": "limit",
+              "value": "50"
+            },
+            {
+              "key": "offset",
+              "value": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Outgoing Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message_type\": \"text\",\n  \"text\": \"Votre dossier est en cours de traitement.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/conversations/{{conversationId}}/messages/outgoing",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "conversations",
+            "{{conversationId}}",
+            "messages",
+            "outgoing"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Workflow Update",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"analysis_request_status\": \"in_review\",\n  \"notes\": \"Prescription checked. Waiting for lab technician validation.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/conversations/{{conversationId}}/workflow",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "conversations",
+            "{{conversationId}}",
+            "workflow"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Close Conversation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": {\n    \"message_type\": \"text\",\n    \"text\": \"Vos résultats sont prêts. Merci de votre confiance.\"\n  },\n  \"notes\": \"Final message sent and request completed.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/conversations/{{conversationId}}/close",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "conversations",
+            "{{conversationId}}",
+            "close"
+          ]
+        }
+      }
+    }
+  ]
+}

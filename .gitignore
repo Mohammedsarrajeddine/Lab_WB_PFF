@@ -1,0 +1,48 @@
+# Environment files with secrets
+.env
+.env.local
+.env.production
+fastapi_app/.env
+frontend-pff-lab/.env
+frontend-pff-lab/.env.local
+api_keys.txt
+!.env.example
+!.env.production.example
+!frontend-pff-lab/.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+
+# Node
+node_modules/
+dist/
+frontend-pff-lab/.output/
+frontend-pff-lab/.vinxi/
+frontend-pff-lab/coverage/
+
+# Docker and local runtime state
+pgdata/
+*.pid
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

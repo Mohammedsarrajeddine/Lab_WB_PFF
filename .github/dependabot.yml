@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+
+  - package-ecosystem: "pip"
+    directory: "/fastapi_app"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "backend"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend-pff-lab"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "frontend"
