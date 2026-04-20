@@ -110,8 +110,8 @@ function PatientsPage() {
       setIsCreateModalOpen(false)
       setCreateName('')
       setCreatePhone('')
-    } catch (error) {
-      setCreateError(getApiErrorMessage(error))
+    } catch (err) {
+      setCreateError(getApiErrorMessage(err))
     } finally {
       setCreateLoading(false)
     }

@@ -1,7 +1,7 @@
 """Proxy endpoint to fetch WhatsApp media via Graph API with auth."""
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import Response
 
 from app.core.config import settings

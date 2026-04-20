@@ -5,10 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.repositories.catalog_repo import CatalogRepository
 from app.db.session import get_db_session
 from app.schemas.catalog import AnalysisCatalogItemOut, PricingRuleOut
-from app.services.catalog.insurance_profiles import (
-    InsuranceProfile,
-    list_insurance_profiles,
-)
+from app.services.catalog.insurance_profiles import list_insurance_profiles
 
 router = APIRouter(tags=["catalog"])
 
@@ -52,4 +49,3 @@ async def get_insurance_profiles():
         )
         for p in profiles
     ]
-

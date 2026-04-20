@@ -65,14 +65,14 @@ export default function Pagination({
             ) : (
               <button
                 key={p}
-                onClick={() => onPageChange(p as number)}
+                onClick={() => onPageChange(p)}
                 className={`h-8 min-w-[2rem] rounded-lg text-xs font-semibold transition-all ${
                   page === p
                     ? 'bg-[var(--lagoon)] text-white shadow-sm scale-105'
                     : 'text-[var(--sea-ink-soft)] hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)]'
                 }`}
               >
-                {(p as number) + 1}
+                {p + 1}
               </button>
             ),
           )}

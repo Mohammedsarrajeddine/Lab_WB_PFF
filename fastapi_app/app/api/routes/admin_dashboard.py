@@ -4,19 +4,16 @@ internal notes, reference data (assurances, channels)."""
 from __future__ import annotations
 
 import logging
-from datetime import date
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.api.deps.auth import require_operator_roles, get_current_operator_user
 from app.db.models.auth import OperatorRole, OperatorUser
 from app.db.models.intake import (
-    AnalysisRequest,
     Conversation,
     ConversationStatus,
     InternalNote,

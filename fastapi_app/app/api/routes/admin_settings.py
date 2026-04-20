@@ -1,26 +1,23 @@
 """Admin-only endpoints to view and update runtime settings (API keys, etc.).
 
 Changes are applied in-memory AND persisted to the database.
-They survive container restarts — DB values override .env on startup.
+They survive container restarts; DB values override .env on startup.
 """
 
 from __future__ import annotations
 
-import asyncio
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Literal
 
-import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps.auth import require_operator_roles
 from app.core.config import settings
 from app.db.models.auth import OperatorRole
-from app.db.session import AsyncSessionLocal, get_db_session
+from app.db.session import get_db_session
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +30,9 @@ ToneName = Literal["success", "warning", "danger", "neutral", "info"]
 OverallStatusName = Literal["healthy", "degraded", "critical"]
 
 
-# ---------------------------------------------------------------------------
-# Schemas
-# ---------------------------------------------------------------------------
-
 class RuntimeSettingsOut(BaseModel):
     """Masked view of current runtime settings."""
+
     whatsapp_access_token: str
     whatsapp_phone_number_id: str
     whatsapp_business_account_id: str
@@ -53,7 +47,8 @@ class RuntimeSettingsOut(BaseModel):
 
 
 class RuntimeSettingsPatch(BaseModel):
-    """Partial update — only provided fields are changed."""
+    """Partial update; only provided fields are changed."""
+
     whatsapp_access_token: str | None = None
     whatsapp_phone_number_id: str | None = None
     whatsapp_business_account_id: str | None = None
@@ -88,12 +83,9 @@ class RuntimeStatusSnapshot(BaseModel):
     services: list[RuntimeDependencyStatus]
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def _mask(value: str, visible: int = 8) -> str:
     """Show first `visible` chars, mask the rest."""
+
     if not value:
         return "(non défini)"
     if len(value) <= visible:
@@ -102,8 +94,6 @@ def _mask(value: str, visible: int = 8) -> str:
 
 
 def _read_settings() -> RuntimeSettingsOut:
-    from app.core.config import settings
-
     return RuntimeSettingsOut(
         whatsapp_access_token=_mask(settings.whatsapp_access_token),
         whatsapp_phone_number_id=settings.whatsapp_phone_number_id or "(non défini)",
@@ -118,10 +108,6 @@ def _read_settings() -> RuntimeSettingsOut:
         ngrok_authtoken=_mask(getattr(settings, "ngrok_authtoken", "")),
     )
 
-
-# ---------------------------------------------------------------------------
-# Endpoints
-# ---------------------------------------------------------------------------
 
 @router.get(
     "/admin/settings",
@@ -143,13 +129,11 @@ async def patch_runtime_settings(
     payload: RuntimeSettingsPatch,
     session: AsyncSession = Depends(get_db_session),
 ) -> RuntimeSettingsOut:
-    from app.core.config import settings
     from app.db.repositories.runtime_settings_repo import upsert_many
 
     updated_in_memory: dict[str, str] = {}
 
-    # Build dict of changes: apply to in-memory settings + collect for DB
-    _FIELD_MAP: list[tuple[str, bool]] = [
+    field_map: list[tuple[str, bool]] = [
         ("whatsapp_access_token", False),
         ("whatsapp_phone_number_id", False),
         ("whatsapp_business_account_id", False),
@@ -163,7 +147,7 @@ async def patch_runtime_settings(
         ("ngrok_authtoken", False),
     ]
 
-    for key, is_bool in _FIELD_MAP:
+    for key, is_bool in field_map:
         value = getattr(payload, key, None)
         if value is None:
             continue
@@ -181,14 +165,13 @@ async def patch_runtime_settings(
             detail="Aucun champ à mettre à jour.",
         )
 
-    # Persist to database
     await upsert_many(session, updated_in_memory)
     await session.commit()
 
-    # Reset WhatsApp client singleton if token changed
     if "whatsapp_access_token" in updated_in_memory:
         try:
             from app.integrations.whatsapp.client import WhatsAppClient
+
             WhatsAppClient._instance = None
         except Exception:
             pass

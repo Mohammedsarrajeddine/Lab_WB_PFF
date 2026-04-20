@@ -9,7 +9,6 @@ from __future__ import annotations
 import logging
 from uuid import UUID
 
-from app.core.config import settings
 from app.db.models.intake import Message, MessageDirection, MessageType
 from app.db.repositories import MessageRepository, PrescriptionRepository
 from app.db.session import AsyncSessionLocal

@@ -2,7 +2,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.result import LabResult, ResultStatus, ResultAuditLog
-from app.db.models.intake import AnalysisRequest, AnalysisRequestStatus, ConversationStatus
+from app.db.models.intake import AnalysisRequestStatus, ConversationStatus
 from app.db.models.auth import OperatorUser
 from app.db.repositories.result_repo import ResultRepository
 from app.db.repositories.conversation_repo import ConversationRepository

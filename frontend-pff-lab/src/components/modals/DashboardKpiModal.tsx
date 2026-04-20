@@ -8,7 +8,6 @@ import {
   FileText,
   TrendingUp,
   Phone,
-  Clock,
   ArrowRight,
   ChevronRight,
   Search,
@@ -24,7 +23,7 @@ import type {
   ConversationListItem,
   DashboardStats,
 } from '../../lib/api'
-import { labelize, formatDateTime } from '../intake/utils'
+import { labelize } from '../intake/utils'
 import Spinner from '../Spinner'
 
 export type KpiModalType = 'patients' | 'conversations' | 'prescriptions' | 'messages' | null

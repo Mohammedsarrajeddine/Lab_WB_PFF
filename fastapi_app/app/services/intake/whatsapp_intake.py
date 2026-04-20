@@ -369,11 +369,6 @@ async def update_conversation_workflow(
     if payload.pricing_tier is not None and payload.pricing_tier != analysis_request.pricing_tier:
         analysis_request.pricing_tier = payload.pricing_tier
 
-    # Recalculate prices when insurance or tier changes
-    needs_reprice = (
-        payload.insurance_code is not None
-        or (payload.pricing_tier is not None and payload.pricing_tier != analysis_request.pricing_tier)
-    )
     if payload.insurance_code is not None or payload.pricing_tier is not None:
         # When insurance changes, also sync the tier from the insurance profile
         if effective_insurance:

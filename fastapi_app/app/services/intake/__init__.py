@@ -21,6 +21,7 @@ __all__ = [
     "InvalidWorkflowTransitionError",
     "MessageConflictError",
     "create_outgoing_message",
+    "extract_prescription_payload",
     "extract_prescription_payload_stub",
     "ingest_whatsapp_message",
     "is_prescription_candidate",

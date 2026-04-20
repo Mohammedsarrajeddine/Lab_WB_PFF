@@ -7,10 +7,9 @@ by Alembic migrations. The database enforces valid enum values at the server lev
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
 from enum import StrEnum
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 

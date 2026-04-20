@@ -108,7 +108,6 @@ async def receive_whatsapp_webhook(
         # Status update (delivered/read) or empty — acknowledge
         return {"status": "ok"}
 
-    last_ack = None
     for payload in parsed_messages:
         logger.debug(
             "Webhook msg: dir=%s type=%s text=%r from=%s",
@@ -118,7 +117,6 @@ async def receive_whatsapp_webhook(
         try:
             ack = await ingest_whatsapp_message(session, payload)
             await session.commit()
-            last_ack = ack
             logger.info("Webhook ingested, conv_id=%s", ack.conversation_id)
 
             # Trigger chatbot auto-reply for incoming messages

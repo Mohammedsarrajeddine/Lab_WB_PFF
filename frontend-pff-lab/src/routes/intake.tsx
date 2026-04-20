@@ -21,7 +21,6 @@ import type {
   ConversationWorkflowUpdatePayload,
   MessageListItem,
   PrescriptionDetail,
-  PricingTier,
   ResultDetail,
 } from '../lib/api'
 import { useAuth } from '../lib/useAuth'
